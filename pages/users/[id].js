@@ -25,7 +25,21 @@ export default function UserDetails({ user }) {
   );
 }
 
-export const getServerSideProps = async (context) => {
+// export const getServerSideProps = async (context) => {
+//   const res = await fetch(
+//     `https://jsonplaceholder.typicode.com/users/${context.params.id}`
+//   );
+
+//   const user = await res.json();
+
+//   return {
+//     props: {
+//       user,
+//     },
+//   };
+// };
+
+export const getStaticProps = async (context) => {
   const res = await fetch(
     `https://jsonplaceholder.typicode.com/users/${context.params.id}`
   );
@@ -36,5 +50,21 @@ export const getServerSideProps = async (context) => {
     props: {
       user,
     },
+  };
+};
+
+export const getStaticPaths = async () => {
+  const res = await fetch('https://jsonplaceholder.typicode.com/users');
+
+  const users = await res.json();
+
+  const ids = users.map((user) => user.id);
+
+  const paths = ids.map((id) => ({ params: { id: id.toString() } }));
+
+  // paths: { params: { id: '1', id: '2'}}
+  return {
+    paths,
+    fallback: false
   };
 };
